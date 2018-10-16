@@ -9,13 +9,13 @@ data to this class.
 import pandas as pd
 
 class raceCountByProvider:
-    def __init__(self, dataframe, deptartment_name):
+    def __init__(self, dataframe):
         """
         :param dataframe: a pandas dataframe object
 
         :param department_name: a string
         """
-        race_dict = {
+        self.race_dict = {
            "Black or African American (HUD)": "Black or African American",
            "American Indian or Alaska Native (HUD)": "American Indian or Alaska Native",
            "American Indian or Alaska Native (HUD) - DOES NOT MAP": "American Indian or Alaska Native",
@@ -28,15 +28,14 @@ class raceCountByProvider:
            "Other (NON-HUD)": "No Race Information Entered",
            "Data not collected (HUD)": "No Race Information Entered"
         }
-        eth_dict = {
+        self.eth_dict = {
             "Non-Hispanic/Non-Latino (HUD)": "Non-Hispanic/Non-Latino",
             "Client refused (HUD)": "No Ethnicity Information Entered",
             "Client doesn't know (HUD)": "No Ethnicity Information Entered",
             "Hispanic/Latino (HUD)": "Hispanic/Latino",
             "Data not collected (HUD)": "No Ethnicity Information Entered"
         }
-        self.data = dataframe
-        self.department = department_name
+        self.data = dataframe.fillna("Data not collected (HUD)")
         self.output_dict = {
             "American Indian or Alaska Native": 0,
             "Asian": 0,
@@ -55,16 +54,18 @@ class raceCountByProvider:
         The self.output_dict will then be have values assigned to keys based on
         the values of these simplified fields.
         """
-        self.data["Race"] = [race_dict[value] for value in self.data["Race(895)"]]
-        self.data["Race_Additional"] = [race_dict[value] for value in self.data["Race-Additional(1213)"]]
-        self.data["Ethnicity"] = [eth_dict[value] for value in self.data["Ethnicity (Hispanic/Latino)(896)"]]
+        self.data["Race"] = [self.race_dict[value] for value in self.data["Race(895)"]]
+        self.data["Race_Additional"] = [self.race_dict[value] for value in self.data["Race-Additional(1213)"]]
+        self.data["Ethnicity"] = [self.eth_dict[value] for value in self.data["Ethnicity (Hispanic/Latino)(896)"]]
 
         for key in self.output_dict.keys():
-            self.output_dict[key] = [len(
+            self.output_dict[key] = len(
                 self.data[
                     (self.data["Race"] == key) |
                     (self.data["Race_Additional"] == key) |
                     (self.data["Ethnicity"] == key)
                 ].drop_duplicates(subset="Client Uid").index
-            )]
+            )
+        self.output_dict["All"] = len(self.data.drop_duplicates(subset="Client Uid").index)
+
         return self.output_dict
