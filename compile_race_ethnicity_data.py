@@ -10,7 +10,7 @@ from tkinter.filedialog import asksaveasfilename
 
 class CreateCombinedEthnicityData:
     def __init__(self):
-        self.entry_data = pd.read_excel(askopenfilename(title="Entry Data"))
+        self.entry_data = pd.read_excel(askopenfilename(title="Service Data"))
         self.providers = {
             "Impact Northwest - SSVF_18-OR-399 – Rapid Re-Housing (VA)(6366)": "Vets",
             "Impact Northwest - SSVF_Renewal 15-ZZ-127 - Homeless Prevention (VA) - SP(4794)": "Vets",
@@ -91,8 +91,35 @@ class CreateCombinedEthnicityData:
             "Urban League - Coordinated Housing Access Team (CHAT)(6081)": "Outreach",
             "ZZ - Transition Projects (TPI) - Columbia Shelter (Do not use after 4/25/18)(5857)": "Placement Provider",
             "Transition Projects (TPI) x-(END 2018/06) Rent - ESGP - Rapid Re-Housing - SP(3926)": "Placement Provider",
-            "Transition Projects (TPI) - Hansen Emergency Shelter - SP(5588)": "Hansen Shelter"
+            "Transition Projects (TPI) - Hansen Emergency Shelter - SP(5588)": "Hansen Shelter",
+            "Transition Projects (TPI) - 5th Avenue Shelter(6281)": "5th Ave Shelter",
+            "Transition Projects (TPI) Rent - EHA-OTO (STRA) - RRH(5611)": "Placement Provider",
+            "Transition Projects (TPI) Rent - PGF (STRA) - RRH(3220)": "Placement Provider",
+            "xx-Transition Projects (TPI) - Jean's Place L2 (HUD) - SP - xx(2805)": "Jean's Place Shelter",
+            "Transition Projects (TPI) Rent - EHA2 (STRA) - HP(6392)": "Placement Provider",
+            "Transition Projects (TPI) Rent - EHA2 (STRA) - RRH(6393)": "Placement Provider",
+            "Transition Projects (TPI) - WyEast Emergency Shelter - SP(6612)": "WyEast Shelter",
+            "ransition Projects (TPI) - Housing Assistance for Section 8 (HSA)(5772)": "Placement Provider",
+            "Transition Projects (TPI) - Housing Assistance for Section 8 (HSA)(5772)": "Placement Provider",
+            "Transition Projects (TPI) Rent - CGF (STRA) - RRH(54)": "Placement Provider",
+            "Transition Projects (TPI) - Health Connections - HP(6485)": "Health and Wellness",
+            "Transition Projects (TPI) - Health Connections - RRH(6482)": "Health and Wellness",
+            "Impact Northwest - SSVF_C15-OR-501A - Rapid Re-Housing (VA) - SP(4797)": "Vets",
+            "xx_Northwest Pilot Project - SSVF_Renewal 15-ZZ-127 - Rapid Re-Housing (VA) - SP(4785)": "Vets",
+            "Transition Projects (TPI) - Peace 2(5793)": "Peace 2 Shelter",
+            "Transition Projects (TPI) x-(END) - EHA-OTO (STRA) - HP(5623)": "Placement Provider",
+            "Transition Projects (TPI) Rent - JGF (STRA) - RRH(6189)": "Placement Provider",
+            "xx_Northwest Pilot Project - SSVF_C15-OR-501A - Rapid Re-Housing (VA) - SP(4787)": "Vets",
+            "Transition Projects (TPI) Rent - OHCS_ESGP - Rapid Re-Housing - SP(3926)": "Placement Provider",
+            "Impact Northwest - SSVF_C15-OR-501A - Homeless Prevention (VA) - SP(4796)": "Vets",
+            "xx_Northwest Pilot Project - SSVF_Renewal 15-ZZ-127 - Homeless Prevention (VA) - SP(4784)": "Vets",
+            "xx_Northwest Pilot Project - SSVF_Renewal 15-ZZ-127 - Homeless Prevention (VA) - SP(4784)": "Vets",
+            "Impact Northwest - SSVF_18-OR-399 – Homeless Prevention (VA)(6367)": "Vets",
+            "Transition Projects (TPI) Rent - OHCS_ESGP - Homeless Prevention(6186)": "Placement Provider",
+            "Transition Projects (TPI) - Health Connections - CM(6481)": "Health and Wellness",
+            "Transition Projects (TPI) - Residential Enhancement Program - SP(4237)": "Placement Provider"
         }
+
         self.entry_data["Provider"] = [self.providers[value] for value in self.entry_data["Service Provide Provider"]]
         self.output_data = {}
 
