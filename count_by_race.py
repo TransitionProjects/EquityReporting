@@ -26,7 +26,8 @@ class raceCountByProvider:
            "Other Multi-Racial": "No Race Information Entered",
            "Asian (HUD)": "Asian",
            "Other (NON-HUD)": "No Race Information Entered",
-           "Data not collected (HUD)": "No Race Information Entered"
+           "Data not collected (HUD)": "No Race Information Entered",
+           "  ": "No Race Information Entered"
         }
         self.eth_dict = {
             "Non-Hispanic/Non-Latino (HUD)": "Non-Hispanic/Non-Latino",
@@ -44,6 +45,13 @@ class raceCountByProvider:
             "Hispanic/Latino": 0,
             "White": 0
         }
+        self.poc = [
+            "American Indian or Alaska Native",
+            "Black or African American",
+            "Native Hawaiian or Other Pacific Islander",
+            "Asian",
+            "Hispanic/Latino"
+        ]
 
 
     def process(self):
@@ -54,6 +62,9 @@ class raceCountByProvider:
         The self.output_dict will then be have values assigned to keys based on
         the values of these simplified fields.
         """
+        self.data["Race(895)"].fillna("No Race Information Entered", inplace=True)
+        self.data["Race-Additional(1213)"].fillna("No Race Information Entered", inplace=True)
+        self.data["Ethnicity (Hispanic/Latino)(896)"].fillna("No Ethnicity Information Entered", inplace=True)
         self.data["Race"] = [self.race_dict[value] for value in self.data["Race(895)"]]
         self.data["Race_Additional"] = [self.race_dict[value] for value in self.data["Race-Additional(1213)"]]
         self.data["Ethnicity"] = [self.eth_dict[value] for value in self.data["Ethnicity (Hispanic/Latino)(896)"]]
@@ -67,5 +78,44 @@ class raceCountByProvider:
                 ].drop_duplicates(subset="Client Uid").index
             )
         self.output_dict["All"] = len(self.data.drop_duplicates(subset="Client Uid").index)
+        self.output_dict["POC"] = len(
+            self.data[
+                self.data["Race"].str.isin(self.poc) |
+                self.data["Race_Additional"].str.isin(self.poc) |
+                self.data["Ethnicity"].str.isin(self.poc)
+            ].index
+        )
+        self.output_dict["White Only"] = len(
+            self.data[
+                ~(self.data["Race"].str.isin(self.poc)) &
+                ~(self.data["Race_Additional"].str.isin(self.poc)) &
+                ~(self.data["Ethnicity"].str.isin(self.poc))
+            ].index
+        )
+        self.output_dict["% American Indian or Alaska Native"] = 100*(
+            self.output_dict["American Indian or Alaska Native"]/self.output_dict["All"]
+        )
+        self.output_dict["% Black or African American"] = 100*(
+            self.output_dict["Black or African American"]/self.output_dict["All"]
+        )
+        self.output_dict["% Native Hawaiian or Other Pacific Islander"] = 100*(
+            self.output_dict["Native Hawaiian or Other Pacific Islander"]/self.output_dict["All"]
+        )
+        self.output_dict["% Asian"] = 100*(
+            self.output_dict["Asian"]/self.output_dict["All"]
+        )
+        self.output_dict["% Hispanic/Latino"] = 100*(
+            self.output_dict["Hispanic/Latino"]/self.output_dict["All"]
+        )
+        self.output_dict["% White"] = 100*(
+            self.output_dict["White"]/self.output_dict["All"]
+        )
+        self.output_dict["% POC"] = 100*(
+            self.output_dict["POC"]/self.output_dict["All"]
+        )
+        self.output_dict["% White Only"] = 100*(
+            self.output_dict["White Only"]/self.output_dict["All"]
+        )
+
 
         return self.output_dict
