@@ -69,6 +69,7 @@ class raceCountByProvider:
         self.data["Race_Additional"] = [self.race_dict[value] for value in self.data["Race-Additional(1213)"]]
         self.data["Ethnicity"] = [self.eth_dict[value] for value in self.data["Ethnicity (Hispanic/Latino)(896)"]]
 
+        # create counts columns for each race/ethnicity
         for key in self.output_dict.keys():
             self.output_dict[key] = len(
                 self.data[
@@ -77,45 +78,46 @@ class raceCountByProvider:
                     (self.data["Ethnicity"] == key)
                 ].drop_duplicates(subset="Client Uid").index
             )
-        self.output_dict["All"] = len(self.data.drop_duplicates(subset="Client Uid").index)
         self.output_dict["POC"] = len(
             self.data[
-                self.data["Race"].str.isin(self.poc) |
-                self.data["Race_Additional"].str.isin(self.poc) |
-                self.data["Ethnicity"].str.isin(self.poc)
-            ].index
+                self.data["Race"].isin(self.poc) |
+                self.data["Race_Additional"].isin(self.poc) |
+                self.data["Ethnicity"].isin(self.poc)
+            ].drop_duplicates(subset="Client Uid").index
         )
         self.output_dict["White Only"] = len(
             self.data[
-                ~(self.data["Race"].str.isin(self.poc)) &
-                ~(self.data["Race_Additional"].str.isin(self.poc)) &
-                ~(self.data["Ethnicity"].str.isin(self.poc))
-            ].index
+                ~(self.data["Race"].isin(self.poc)) &
+                ~(self.data["Race_Additional"].isin(self.poc)) &
+                ~(self.data["Ethnicity"].isin(self.poc))
+            ].drop_duplicates(subset="Client Uid").index
         )
-        self.output_dict["% American Indian or Alaska Native"] = 100*(
+        self.output_dict["All"] = len(self.data.drop_duplicates(subset="Client Uid").index)
+
+        # create % columns for each race/ethnicity
+        self.output_dict["% American Indian or Alaska Native"] = (
             self.output_dict["American Indian or Alaska Native"]/self.output_dict["All"]
         )
-        self.output_dict["% Black or African American"] = 100*(
+        self.output_dict["% Black or African American"] = (
             self.output_dict["Black or African American"]/self.output_dict["All"]
         )
-        self.output_dict["% Native Hawaiian or Other Pacific Islander"] = 100*(
+        self.output_dict["% Native Hawaiian or Other Pacific Islander"] = (
             self.output_dict["Native Hawaiian or Other Pacific Islander"]/self.output_dict["All"]
         )
-        self.output_dict["% Asian"] = 100*(
+        self.output_dict["% Asian"] = (
             self.output_dict["Asian"]/self.output_dict["All"]
         )
-        self.output_dict["% Hispanic/Latino"] = 100*(
+        self.output_dict["% Hispanic/Latino"] = (
             self.output_dict["Hispanic/Latino"]/self.output_dict["All"]
         )
-        self.output_dict["% White"] = 100*(
+        self.output_dict["% White"] = (
             self.output_dict["White"]/self.output_dict["All"]
         )
-        self.output_dict["% POC"] = 100*(
+        self.output_dict["% POC"] = (
             self.output_dict["POC"]/self.output_dict["All"]
         )
-        self.output_dict["% White Only"] = 100*(
+        self.output_dict["% White Only"] = (
             self.output_dict["White Only"]/self.output_dict["All"]
         )
-
 
         return self.output_dict
